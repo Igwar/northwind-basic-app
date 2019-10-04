@@ -11,4 +11,7 @@
 <ItemGroup>
   <AdditionalFiles Include="stylecop.json" />
 </ItemGroup>
+<ItemGroup>
+  <PackageReference Include="editorconfig" Version="0.12.1" />
+</ItemGroup>
 </Project>
