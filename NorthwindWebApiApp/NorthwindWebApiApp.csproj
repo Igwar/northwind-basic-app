@@ -14,6 +14,7 @@
 <ItemGroup>
   <PackageReference Include="editorconfig" Version="0.12.1" />
   <PackageReference Include="Microsoft.Data.Services.Client" Version="5.8.4" />
+  <PackageReference Include="Swashbuckle.AspNetCore" Version="5.0.0-rc4" />
   <PackageReference Include="System.Configuration.ConfigurationManager" Version="4.6.0" />
 </ItemGroup>
 <ItemGroup>
@@ -22,4 +23,8 @@
   <Folder Include="Services\" />
   <Folder Include="Controllers\" />
 </ItemGroup>
+  <PropertyGroup>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>$(NoWarn);1591</NoWarn>
+  </PropertyGroup>
 </Project>
