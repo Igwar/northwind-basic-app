@@ -22,7 +22,7 @@ namespace NorthwindWebApiApp
         {
             services.AddControllers();
             services.AddScoped<IOrderService, OrderService>();
-      
+            services.Configure<Configuration.NorthwindServiceConfiguration>(this.configuration.GetSection("NorthwindServiceConfiguration"));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

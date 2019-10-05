@@ -1,8 +1,9 @@
 ﻿
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-
+using Microsoft.Extensions.Options;
 using NorthwindWebApiApp.Models;
 
 namespace NorthwindWebApiApp.Services
@@ -11,7 +12,11 @@ namespace NorthwindWebApiApp.Services
     {
         private readonly NorthwindModel.NorthwindEntities entities;
 
-      
+        public OrderService(IOptions<Configuration.NorthwindServiceConfiguration> northwindServiceConfiguration)
+        {
+            var uri = northwindServiceConfiguration == null ? throw new ArgumentNullException(nameof(northwindServiceConfiguration)) : northwindServiceConfiguration.Value.Uri;
+            this.entities = new NorthwindModel.NorthwindEntities(uri);
+        }
 
         public async Task<IEnumerable<BriefOrderModel>> GetOrdersAsync()
         {
