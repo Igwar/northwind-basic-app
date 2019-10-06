@@ -5,7 +5,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using NorthwindWebApiApp.Models;
 
 namespace NorthwindWebApiApp.Services
 {
@@ -21,7 +20,7 @@ namespace NorthwindWebApiApp.Services
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
-        public async Task<IEnumerable<BriefOrderModel>> GetOrdersAsync()
+        public async Task<IEnumerable<BriefOrderDescription>> GetOrdersAsync()
         {
             var orderTaskFactory = new TaskFactory<IEnumerable<NorthwindModel.Order>>();
             this.logger.LogDebug($"Getting data from ${this.uri.AbsoluteUri}.");
@@ -29,7 +28,7 @@ namespace NorthwindWebApiApp.Services
                 this.entities.Orders.BeginExecute(null, null),
                 iar => this.entities.Orders.EndExecute(iar));
 
-            return orders.Select(o => new BriefOrderModel
+            return orders.Select(o => new BriefOrderDescription
             {
                 OrderId = o.OrderID,
                 OrderDate = o.OrderDate,
@@ -37,7 +36,7 @@ namespace NorthwindWebApiApp.Services
             }).ToArray();
         }
 
-        public async Task<FullOrderModel> GetOrderAsync(int orderId)
+        public async Task<FullOrderDescription> GetOrderAsync(int orderId)
         {
             var orderQueryTaskFactory = new TaskFactory<IEnumerable<NorthwindModel.Orders_Qry>>();
             var query = this.entities.Orders_Qries.AddQueryOption("$filter", $"OrderID eq {orderId}");
@@ -53,7 +52,7 @@ namespace NorthwindWebApiApp.Services
                 return null;
             }
 
-            return new FullOrderModel
+            return new FullOrderDescription
             {
                 OrderId = order.OrderID,
                 CustomerId = order.CustomerID,
@@ -63,7 +62,7 @@ namespace NorthwindWebApiApp.Services
                 ShipVia = order.ShipVia,
             };
         }
-        public async Task<IEnumerable<BriefOrderVersion2Model>> GetExtendedOrdersAsync()
+        public async Task<IEnumerable<BriefOrderVersion2Description>> GetExtendedOrdersAsync()
         {
             var orderTaskFactory = new TaskFactory<IEnumerable<NorthwindModel.Order>>();
 
@@ -73,7 +72,7 @@ namespace NorthwindWebApiApp.Services
                 this.entities.Orders.BeginExecute(null, null),
                 iar => this.entities.Orders.EndExecute(iar));
 
-            return orders.Select(o => new BriefOrderVersion2Model
+            return orders.Select(o => new BriefOrderVersion2Description
             {
                 OrderId = o.OrderID,
                 OrderDate = o.OrderDate,

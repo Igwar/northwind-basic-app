@@ -12,6 +12,8 @@
   <AdditionalFiles Include="stylecop.json" />
 </ItemGroup>
 <ItemGroup>
+  <PackageReference Include="AutoMapper" Version="9.0.0" />
+  <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="7.0.0" />
   <PackageReference Include="editorconfig" Version="0.12.1" />
   <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning" Version="4.0.0-preview8.19405.7" />
   <PackageReference Include="Microsoft.Data.Services.Client" Version="5.8.4" />
@@ -21,7 +23,6 @@
 </ItemGroup>
 <ItemGroup>
   <Folder Include="ExternalServices\" />
-  <Folder Include="Services\" />
 </ItemGroup>
   <PropertyGroup>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using NorthwindWebApiApp.Models;
@@ -16,10 +17,12 @@ namespace NorthwindWebApiApp.Controllers
     {
         private readonly IOrderService orderService;
         private readonly ILogger<OrdersController> logger;
-        public OrdersController(IOrderService orderService, ILogger<OrdersController> logger)
+        private readonly IMapper mapper;
+        public OrdersController(IOrderService orderService, ILogger<OrdersController> logger,IMapper mapper)
         {
             this.orderService = orderService ?? throw new ArgumentNullException(nameof(orderService));
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            this.mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
         [HttpGet]
@@ -28,7 +31,8 @@ namespace NorthwindWebApiApp.Controllers
             this.logger.LogInformation("Calling OrdersController.GetOrders");
             try
             {
-                return this.Ok(await this.orderService.GetOrdersAsync());
+                var result = await this.orderService.GetOrdersAsync();
+                return this.Ok(this.mapper.Map<BriefOrderModel[]>(result));
             }
             catch (Exception e)
             {
@@ -43,7 +47,8 @@ namespace NorthwindWebApiApp.Controllers
             this.logger.LogInformation("Calling OrdersController.GetOrders(int orderId)");
             try
             {
-                return this.Ok(await this.orderService.GetOrderAsync(orderId));
+                var result = await this.orderService.GetOrderAsync(orderId);
+                return this.Ok(this.mapper.Map<FullOrderModel>(result));
             }
             catch (Exception e)
             {
