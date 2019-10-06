@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using NorthwindWebApiApp.Models;
 
@@ -11,17 +12,19 @@ namespace NorthwindWebApiApp.Services
     public class OrderService : IOrderService
     {
         private readonly NorthwindModel.NorthwindEntities entities;
-
-        public OrderService(IOptions<Configuration.NorthwindServiceConfiguration> northwindServiceConfiguration)
+        private readonly ILogger<OrderService> logger;
+        private readonly Uri uri;
+        public OrderService(IOptions<Configuration.NorthwindServiceConfiguration> northwindServiceConfiguration, ILogger<OrderService> logger)
         {
-            var uri = northwindServiceConfiguration == null ? throw new ArgumentNullException(nameof(northwindServiceConfiguration)) : northwindServiceConfiguration.Value.Uri;
+            this.uri = northwindServiceConfiguration == null ? throw new ArgumentNullException(nameof(northwindServiceConfiguration)) : northwindServiceConfiguration.Value.Uri;
             this.entities = new NorthwindModel.NorthwindEntities(uri);
+            this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         public async Task<IEnumerable<BriefOrderModel>> GetOrdersAsync()
         {
             var orderTaskFactory = new TaskFactory<IEnumerable<NorthwindModel.Order>>();
-
+            this.logger.LogDebug($"Getting data from ${this.uri.AbsoluteUri}.");
             var orders = await orderTaskFactory.FromAsync(
                 this.entities.Orders.BeginExecute(null, null),
                 iar => this.entities.Orders.EndExecute(iar));
@@ -38,7 +41,7 @@ namespace NorthwindWebApiApp.Services
         {
             var orderQueryTaskFactory = new TaskFactory<IEnumerable<NorthwindModel.Orders_Qry>>();
             var query = this.entities.Orders_Qries.AddQueryOption("$filter", $"OrderID eq {orderId}");
-
+            this.logger.LogDebug($"Getting data from {this.uri.AbsoluteUri}.");
             var orders = (await orderQueryTaskFactory.FromAsync(
                 query.BeginExecute(null, null),
                 iar => query.EndExecute(iar))).ToArray();
@@ -64,7 +67,7 @@ namespace NorthwindWebApiApp.Services
         {
             var orderTaskFactory = new TaskFactory<IEnumerable<NorthwindModel.Order>>();
 
-           
+            this.logger.LogDebug($"Getting data from {this.uri.AbsoluteUri}.");
 
             var orders = await orderTaskFactory.FromAsync(
                 this.entities.Orders.BeginExecute(null, null),
