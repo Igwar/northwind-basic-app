@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using NorthwindWebApiApp.Models;
 
@@ -9,5 +9,6 @@ namespace NorthwindWebApiApp.Services
         Task<IEnumerable<BriefOrderModel>> GetOrdersAsync();
 
         Task<FullOrderModel> GetOrderAsync(int orderId);
+        Task<IEnumerable<BriefOrderVersion2Model>> GetExtendedOrdersAsync();
     }
 }
