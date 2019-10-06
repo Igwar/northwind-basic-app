@@ -8,14 +8,13 @@ using NorthwindWebApiApp.Services;
 namespace NorthwindWebApiApp.Controllers
 {
     [ApiController]
-    [ApiVersion("1.0")]
-    [Route("api/v{version:apiVersion}/[controller]")]
-    
-    public class OrdersController : ControllerBase
+    [ApiVersion("2.0")]
+    [Route("api/v{version:apiVersion}/orders")]
+    public class OrdersVersion2Controller : ControllerBase
     {
         private readonly IOrderService orderService;
 
-        public OrdersController(IOrderService orderService)
+        public OrdersVersion2Controller(IOrderService orderService)
         {
             this.orderService = orderService ?? throw new ArgumentNullException(nameof(orderService));
         }
@@ -23,7 +22,7 @@ namespace NorthwindWebApiApp.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<BriefOrderModel>>> GetOrders()
         {
-            return this.Ok(await this.orderService.GetOrdersAsync());
+            return this.Ok(await this.orderService.GetExtendedOrdersAsync());
         }
 
         [HttpGet("{orderId}")]
