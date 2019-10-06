@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Serilog;
+using Serilog.Events;
 
 namespace NorthwindWebApiApp
 {
@@ -13,7 +15,29 @@ namespace NorthwindWebApiApp
     {
         public static void Main(string[] args)
         {
-            CreateHostBuilder(args).Build().Run();
+            Log.Logger = new LoggerConfiguration()
+                .MinimumLevel.Debug()
+                .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
+                .Enrich.FromLogContext()
+                .WriteTo.Console()
+                .CreateLogger();
+
+            try
+            {
+                Log.Information("Starting web host");
+                CreateHostBuilder(args).Build().Run();
+            }
+#pragma warning disable CA1031
+            catch (Exception ex)
+#pragma warning restore CA1031
+            {
+                Log.Fatal(ex, "Host terminated unexpectedly");
+                
+            }
+            finally
+            {
+                Log.CloseAndFlush();
+            }
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
@@ -22,12 +46,7 @@ namespace NorthwindWebApiApp
                 {
                     webBuilder.UseStartup<Startup>();
                 })
-                .ConfigureLogging(config =>
-                {
-                    config.ClearProviders();
-                    config.AddConsole();
-                    config.AddDebug();
-                });
+                  .UseSerilog();
 
     }
 }
